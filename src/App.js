@@ -1,34 +1,37 @@
 import React from "react";
-import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
-
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiZG1zZXIiLCJhIjoiY2twb2k5dGF1MGRvajJ2bW5xbHMzbHVyZiJ9.PRK8YZPAwmAf_IhSMgccUA";
+import Search from "./custom_components/Search";
+import Pannel from "./custom_components/Pannel";
+import Mapbox from "./custom_components/Mapbox";
 
 export default class App extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      lng: -70.9,
-      lat: 42.35,
-      zoom: 9,
+      map: {
+        lng: -70.9,
+        lat: 42.35,
+        zoom: 5,
+      },
     };
-    this.mapContainer = React.createRef();
+    this.handleMapMove = this.handleMapMove.bind(this);
   }
 
-  componentDidMount() {
-    const { lng, lat, zoom } = this.state;
-    const map = new mapboxgl.Map({
-      container: this.mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v11",
-      center: [lng, lat],
-      zoom: zoom,
+  handleMapMove(mapObj) {
+    this.setState({
+      map: {
+        lng: mapObj.getCenter().lng.toFixed(4),
+        lat: mapObj.getCenter().lat.toFixed(4),
+        zoom: mapObj.getZoom().toFixed(2),
+      },
     });
   }
 
   render() {
     return (
       <div>
-        <div ref={this.mapContainer} className="map-container" />
+        <Search />
+        <Pannel />
+        <Mapbox map={this.state.map} handleMapMove={this.handleMapMove} />
       </div>
     );
   }
