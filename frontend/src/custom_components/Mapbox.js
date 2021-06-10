@@ -8,6 +8,14 @@ export default class Mapbox extends React.PureComponent {
   constructor(props) {
     super(props);
     this.mapContainer = React.createRef();
+    this.getFeatures = this.getFeatures.bind(this);
+  }
+
+  getFeatures() {
+    return this.props.visited.map((entry) => ({
+      type: "Feature",
+      geometry: entry.location,
+    }));
   }
 
   componentDidMount() {
@@ -19,8 +27,42 @@ export default class Mapbox extends React.PureComponent {
       zoom: zoom,
     });
 
+    const features = this.getFeatures();
+    console.log(features);
+
     map.on("move", () => {
       this.props.handleMapMove(map);
+    });
+    map.on("load", function () {
+      map.addSource("countries", {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: features,
+        },
+      });
+
+      map.addLayer({
+        id: "countries",
+        type: "fill",
+        source: "countries",
+        layout: {},
+        paint: {
+          "fill-color": "#addfad",
+          "fill-opacity": 0.5,
+        },
+      });
+
+      map.addLayer({
+        id: "outline",
+        type: "line",
+        source: "countries",
+        layout: {},
+        paint: {
+          "line-color": "#1b4d3e",
+          "line-width": 2,
+        },
+      });
     });
   }
 
