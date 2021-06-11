@@ -48,7 +48,7 @@ export default class Mapbox extends React.PureComponent {
         source: "countries",
         layout: {},
         paint: {
-          "fill-color": "#addfad",
+          "fill-color": "#aad8d3",
           "fill-opacity": 0.5,
         },
       });
@@ -59,7 +59,7 @@ export default class Mapbox extends React.PureComponent {
         source: "countries",
         layout: {},
         paint: {
-          "line-color": "#1b4d3e",
+          "line-color": "#00adb5",
           "line-width": 2,
         },
       });
