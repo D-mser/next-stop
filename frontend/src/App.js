@@ -48,8 +48,8 @@ export default class App extends React.PureComponent {
   render() {
     if (!this.state.isFetching) {
       return (
-        <div>
-          <Search />
+        <div className="grid-container">
+          <Search data={this.state.visitedCountries} />
           <Pannel data={this.state.visitedCountries} />
           <Mapbox
             map={this.state.map}

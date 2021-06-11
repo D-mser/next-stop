@@ -1,5 +1,8 @@
+body {
+  background-color: #efefe8ff;
+}
 .map-container {
-  height: 600px;
+  height: 60vh;
 }
 
 .sidebar {
@@ -9,8 +12,44 @@
   font-family: monospace;
   z-index: 1;
   position: absolute;
-  bottom: 0;
-  right: 0;
+  top: 0;
+  left: 0;
   margin: 12px;
   border-radius: 4px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    "search info_pannel"
+    "map map";
+}
+
+#search {
+  grid-area: search;
+  height: 35vh;
+  padding: 10px;
+}
+
+#pannel {
+  grid-area: info_pannel;
+  height: 35vh;
+  padding: 10px;
+  overflow: auto;
+  max-height: 100vh;
+}
+
+#map {
+  grid-area: map;
+  position: relative;
+}
+
+h4 {
+  text-align: center;
+  height: 20px;
+  padding: 5px;
+  background-color: #00adb5;
+  color: white;
 }

@@ -11,8 +11,8 @@ export default class Pannel extends React.PureComponent {
       );
     });
     return (
-      <div>
-        <h5>Visited countries:</h5>
+      <div id="pannel">
+        <h4>Visited countries</h4>
         {countries}
       </div>
     );

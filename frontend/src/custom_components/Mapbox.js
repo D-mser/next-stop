@@ -69,7 +69,7 @@ export default class Mapbox extends React.PureComponent {
   render() {
     const { lng, lat, zoom } = this.props.map;
     return (
-      <div>
+      <div id="map">
         <div className="sidebar">
           Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
         </div>
