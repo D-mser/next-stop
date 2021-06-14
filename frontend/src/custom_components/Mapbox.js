@@ -3,12 +3,14 @@ import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-load
 import { MAPBOX_TOKEN } from "../config";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
+let map = "";
 
 export default class Mapbox extends React.PureComponent {
   constructor(props) {
     super(props);
     this.mapContainer = React.createRef();
     this.getFeatures = this.getFeatures.bind(this);
+    this.handleFlyToLocation = this.handleFlyToLocation.bind(this);
   }
 
   getFeatures() {
@@ -18,9 +20,18 @@ export default class Mapbox extends React.PureComponent {
     }));
   }
 
+  handleFlyToLocation() {
+    if (this.props.newCenter.length > 1) {
+      map.flyTo({
+        center: this.props.newCenter,
+        essential: true,
+      });
+    }
+  }
+
   componentDidMount() {
     const { lng, lat, zoom } = this.props.map;
-    const map = new mapboxgl.Map({
+    map = new mapboxgl.Map({
       container: this.mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [lng, lat],
@@ -28,7 +39,10 @@ export default class Mapbox extends React.PureComponent {
     });
 
     const features = this.getFeatures();
-    console.log(features);
+
+    document
+      .getElementById("search-button")
+      .addEventListener("click", this.handleFlyToLocation);
 
     map.on("move", () => {
       this.props.handleMapMove(map);
@@ -48,7 +62,7 @@ export default class Mapbox extends React.PureComponent {
         source: "countries",
         layout: {},
         paint: {
-          "fill-color": "#addfad",
+          "fill-color": "#aad8d3",
           "fill-opacity": 0.5,
         },
       });
@@ -59,7 +73,7 @@ export default class Mapbox extends React.PureComponent {
         source: "countries",
         layout: {},
         paint: {
-          "line-color": "#1b4d3e",
+          "line-color": "#00adb5",
           "line-width": 2,
         },
       });
@@ -69,7 +83,7 @@ export default class Mapbox extends React.PureComponent {
   render() {
     const { lng, lat, zoom } = this.props.map;
     return (
-      <div>
+      <div id="map">
         <div className="sidebar">
           Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
         </div>
