@@ -36,6 +36,8 @@ export default class Mapbox extends React.PureComponent {
       style: "mapbox://styles/mapbox/streets-v11",
       center: [lng, lat],
       zoom: zoom,
+      maxZoom: 10,
+      minZoom: zoom,
     });
 
     const features = this.getFeatures();
