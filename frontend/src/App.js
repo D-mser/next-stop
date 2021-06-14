@@ -15,8 +15,10 @@ export default class App extends React.PureComponent {
       },
       isFetching: true,
       visitedCountries: [],
+      nextDestination: [],
     };
     this.handleMapMove = this.handleMapMove.bind(this);
+    this.handleCenterChange = this.handleCenterChange.bind(this);
   }
 
   componentDidMount() {
@@ -45,15 +47,27 @@ export default class App extends React.PureComponent {
     });
   }
 
+  handleCenterChange(centroid) {
+    console.log(centroid.geometry.coordinates);
+    this.setState({
+      ...this.state,
+      nextDestination: centroid.geometry.coordinates,
+    });
+  }
+
   render() {
     if (!this.state.isFetching) {
       return (
         <div className="grid-container">
-          <Search data={this.state.visitedCountries} />
+          <Search
+            data={this.state.visitedCountries}
+            handleCenterChange={this.handleCenterChange}
+          />
           <Pannel data={this.state.visitedCountries} />
           <Mapbox
             map={this.state.map}
             handleMapMove={this.handleMapMove}
+            newCenter={this.state.nextDestination}
             visited={this.state.visitedCountries}
           />
         </div>
