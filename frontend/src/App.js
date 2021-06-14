@@ -14,7 +14,7 @@ export default class App extends React.PureComponent {
         zoom: 5,
       },
       isFetching: true,
-      visitedCountries: [],
+      countries: [],
       nextDestination: [],
     };
     this.handleMapMove = this.handleMapMove.bind(this);
@@ -23,11 +23,11 @@ export default class App extends React.PureComponent {
 
   componentDidMount() {
     axios
-      .get("http://localhost:4000/getVisitedCountries")
+      .get("http://localhost:4000/getCountries")
       .then((res) => {
         this.setState({
           ...this.state,
-          visitedCountries: res.data,
+          countries: res.data,
           isFetching: false,
         });
       })
@@ -57,18 +57,22 @@ export default class App extends React.PureComponent {
 
   render() {
     if (!this.state.isFetching) {
+      const visited = this.state.countries.filter(
+        (country) => country.visited === true
+      );
+      console.log(visited);
       return (
         <div className="grid-container">
           <Search
-            data={this.state.visitedCountries}
+            data={this.state.countries}
             handleCenterChange={this.handleCenterChange}
           />
-          <Pannel data={this.state.visitedCountries} />
+          <Pannel data={visited} />
           <Mapbox
             map={this.state.map}
             handleMapMove={this.handleMapMove}
             newCenter={this.state.nextDestination}
-            visited={this.state.visitedCountries}
+            visited={visited}
           />
         </div>
       );

@@ -24,8 +24,8 @@ app.listen(PORT, function () {
 
 let country = require("./model");
 
-router.route("/getVisitedCountries").get(function (req, res) {
-  country.find({ visited: true }, function (err, result) {
+router.route("/getCountries").get(function (req, res) {
+  country.find({ "location.type": "Polygon" }, function (err, result) {
     if (err) {
       res.send(err);
     } else {
