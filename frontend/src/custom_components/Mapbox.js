@@ -1,6 +1,8 @@
 import React from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { MAPBOX_TOKEN } from "../config";
+import LayersClearIcon from "@material-ui/icons/LayersClear";
+import IconButton from "@material-ui/core/IconButton";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 let map = "";
@@ -9,25 +11,27 @@ export default class Mapbox extends React.PureComponent {
   constructor(props) {
     super(props);
     this.mapContainer = React.createRef();
-    this.getFeatures = this.getFeatures.bind(this);
-    this.handleFlyToLocation = this.handleFlyToLocation.bind(this);
   }
 
-  getFeatures() {
+  getFeatures = () => {
     return this.props.visited.map((entry) => ({
       type: "Feature",
       geometry: entry.location,
     }));
-  }
+  };
 
-  handleFlyToLocation() {
+  handleFlyToLocation = () => {
     if (this.props.newCenter.length > 1) {
+      let marker = new mapboxgl.Marker()
+        .setLngLat(this.props.newCenter)
+        .addTo(map);
+      this.props.handleMarkerUpdate(marker);
       map.flyTo({
         center: this.props.newCenter,
         essential: true,
       });
     }
-  }
+  };
 
   componentDidMount() {
     const { lng, lat, zoom } = this.props.map;
@@ -37,7 +41,7 @@ export default class Mapbox extends React.PureComponent {
       center: [lng, lat],
       zoom: zoom,
       maxZoom: 10,
-      minZoom: zoom,
+      minZoom: 3,
     });
 
     const features = this.getFeatures();
@@ -88,6 +92,11 @@ export default class Mapbox extends React.PureComponent {
       <div id="map">
         <div className="sidebar">
           Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+        </div>
+        <div id="custom-control">
+          <IconButton onClick={this.props.onClearMarkers(map)}>
+            <LayersClearIcon color="primary" fontSize="large" />
+          </IconButton>
         </div>
         <div ref={this.mapContainer} className="map-container" />
       </div>

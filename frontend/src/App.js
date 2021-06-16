@@ -5,23 +5,19 @@ import axios from "axios";
 import Pannel from "./custom_components/Pannel";
 
 export default class App extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      map: {
-        lng: -70.9,
-        lat: 42.35,
-        zoom: 5,
-      },
-      isFetching: true,
-      countries: [],
-      nextDestination: [],
-    };
-    this.handleMapMove = this.handleMapMove.bind(this);
-    this.handleCenterChange = this.handleCenterChange.bind(this);
-  }
+  state = {
+    map: {
+      lng: -70.9,
+      lat: 42.35,
+      zoom: 5,
+    },
+    isFetching: true,
+    countries: [],
+    nextDestination: [],
+    markers: [],
+  };
 
-  componentDidMount() {
+  componentDidMount = () => {
     axios
       .get("http://localhost:4000/getCountries")
       .then((res) => {
@@ -35,9 +31,20 @@ export default class App extends React.PureComponent {
         console.log(error);
         this.setState({ ...this.state, isFetching: false });
       });
-  }
+  };
 
-  handleMapMove(mapObj) {
+  handleMarkerUpdate = (marker) => {
+    this.setState({
+      ...this.state,
+      markers: this.state.markers.concat(marker),
+    });
+  };
+
+  onClearMarkers = (map) => {
+    //to be implemented
+  };
+
+  handleMapMove = (mapObj) => {
     this.setState({
       map: {
         lng: mapObj.getCenter().lng.toFixed(4),
@@ -45,34 +52,34 @@ export default class App extends React.PureComponent {
         zoom: mapObj.getZoom().toFixed(2),
       },
     });
-  }
+  };
 
-  handleCenterChange(centroid) {
-    console.log(centroid.geometry.coordinates);
+  handleCenterChange = (centroid) => {
     this.setState({
       ...this.state,
       nextDestination: centroid.geometry.coordinates,
     });
-  }
+  };
 
   render() {
     if (!this.state.isFetching) {
       const visited = this.state.countries.filter(
         (country) => country.visited === true
       );
-      console.log(visited);
       return (
         <div className="grid-container">
           <Search
             data={this.state.countries}
             handleCenterChange={this.handleCenterChange}
           />
-          <Pannel data={visited} />
+          <Pannel count={visited.length} />
           <Mapbox
             map={this.state.map}
             handleMapMove={this.handleMapMove}
             newCenter={this.state.nextDestination}
             visited={visited}
+            handleMarkerUpdate={this.handleMarkerUpdate}
+            onClearMarkers={this.onClearMarkers}
           />
         </div>
       );
