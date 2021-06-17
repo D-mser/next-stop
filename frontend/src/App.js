@@ -41,7 +41,15 @@ export default class App extends React.PureComponent {
   };
 
   onClearMarkers = (map) => {
-    //to be implemented
+    const { markers } = this.state;
+    for (let index = 0; index < markers.length; index++) {
+      markers[index].remove();
+    }
+
+    this.setState({
+      ...this.state,
+      markers: [],
+    });
   };
 
   handleMapMove = (mapObj) => {

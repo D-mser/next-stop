@@ -94,7 +94,7 @@ export default class Mapbox extends React.PureComponent {
           Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
         </div>
         <div id="custom-control">
-          <IconButton onClick={this.props.onClearMarkers(map)}>
+          <IconButton onClick={() => this.props.onClearMarkers(map)}>
             <LayersClearIcon color="primary" fontSize="large" />
           </IconButton>
         </div>
