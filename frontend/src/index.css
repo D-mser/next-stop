@@ -54,3 +54,7 @@ body {
   grid-area: map;
   position: relative;
 }
+
+#mark-visited-button {
+  margin-left: 5px;
+}
