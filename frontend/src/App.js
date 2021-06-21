@@ -1,20 +1,21 @@
-import React from "react";
+import React, { Component } from "react";
 import Search from "./custom_components/Search";
 import Mapbox from "./custom_components/Mapbox";
 import axios from "axios";
 import Pannel from "./custom_components/Pannel";
 
-export default class App extends React.PureComponent {
+export default class App extends Component {
   state = {
     map: {
       lng: -70.9,
       lat: 42.35,
       zoom: 5,
     },
+    markers: [],
     isFetching: true,
     countries: [],
     nextDestination: [],
-    markers: [],
+    selectedValue: "",
   };
 
   componentDidMount = () => {
@@ -22,7 +23,6 @@ export default class App extends React.PureComponent {
       .get("http://localhost:4000/getCountries")
       .then((res) => {
         this.setState({
-          ...this.state,
           countries: res.data,
           isFetching: false,
         });
@@ -35,7 +35,6 @@ export default class App extends React.PureComponent {
 
   handleMarkerUpdate = (marker) => {
     this.setState({
-      ...this.state,
       markers: this.state.markers.concat(marker),
     });
   };
@@ -47,7 +46,6 @@ export default class App extends React.PureComponent {
     }
 
     this.setState({
-      ...this.state,
       markers: [],
     });
   };
@@ -62,11 +60,23 @@ export default class App extends React.PureComponent {
     });
   };
 
-  handleCenterChange = (centroid) => {
+  handleCenterChange = (centroid, selected) => {
     this.setState({
-      ...this.state,
       nextDestination: centroid.geometry.coordinates,
+      selectedValue: selected,
     });
+  };
+
+  handleMarkAsVisited = () => {
+    const url = "http://localhost:4000/setVisited/" + this.state.selectedValue;
+    axios
+      .put(url)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   render() {
@@ -79,6 +89,7 @@ export default class App extends React.PureComponent {
           <Search
             data={this.state.countries}
             handleCenterChange={this.handleCenterChange}
+            handleMarkAsVisited={this.handleMarkAsVisited}
           />
           <Pannel count={visited.length} />
           <Mapbox

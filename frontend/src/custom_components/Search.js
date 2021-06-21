@@ -28,11 +28,20 @@ export default class Search extends React.PureComponent {
             let turf = require("@turf/turf");
             let polygon = turf.polygon(selectedCountry.location.coordinates);
             let centroid = turf.centroid(polygon);
-            this.props.handleCenterChange(centroid);
+            this.props.handleCenterChange(centroid, value);
           }}
         />
         <Button id="search-button" variant="contained" color="primary">
           Search
+        </Button>
+
+        <Button
+          id="mark-visited-button"
+          variant="contained"
+          color="primary"
+          onClick={this.props.handleMarkAsVisited}
+        >
+          Mark as Visited
         </Button>
       </div>
     );
