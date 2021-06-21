@@ -8,6 +8,8 @@ let country = new Schema({
     type: String,
     coordinates: [[[Number]]],
   }),
+  visited: Boolean,
+  toBeVisited: Boolean,
 });
 
 module.exports = mongoose.model("country", country);

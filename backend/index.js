@@ -33,3 +33,20 @@ router.route("/getCountries").get(function (req, res) {
     }
   });
 });
+
+router.route("/setVisited/:name").put(function (req, res) {
+  let inputName = req.params.name;
+  let filter = { name: inputName };
+  let updateDoc = {
+    $set: {
+      visited: true,
+    },
+  };
+  country.updateOne(filter, updateDoc, function (err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
