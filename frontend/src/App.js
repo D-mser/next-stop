@@ -1,74 +1,58 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import Search from "./custom_components/Search";
 import Mapbox from "./custom_components/Mapbox";
 import axios from "axios";
 import Pannel from "./custom_components/Pannel";
 
-export default class App extends Component {
-  state = {
-    map: {
-      lng: -70.9,
-      lat: 42.35,
-      zoom: 5,
-    },
-    markers: [],
-    isFetching: true,
-    countries: [],
-    nextDestination: [],
-    selectedValue: "",
-  };
+export default function App() {
+  const [lng, setLng] = useState(-70.9);
+  const [lat, setLat] = useState(42.35);
+  const [zoom, setZoom] = useState(5);
+  const [markers, setMarkers] = useState([]);
+  const [isFetching, setIsFetching] = useState(true);
+  const [countries, setCountries] = useState([]);
+  const [nextDestination, setNextDestination] = useState([]);
+  const [selectedValue, setSelectedValue] = useState("");
 
-  componentDidMount = () => {
+  useEffect(() => {
+    if (countries.length) return;
     axios
       .get("http://localhost:4000/getCountries")
       .then((res) => {
-        this.setState({
-          countries: res.data,
-          isFetching: false,
-        });
+        setCountries((prevCountries) => prevCountries.concat(res.data));
+        setIsFetching(false);
       })
       .catch(function (error) {
         console.log(error);
-        this.setState({ ...this.state, isFetching: false });
+        setIsFetching(false);
       });
-  };
+  });
 
-  handleMarkerUpdate = (marker) => {
-    this.setState({
-      markers: this.state.markers.concat(marker),
-    });
-  };
+  function handleMarkerUpdate(marker) {
+    setMarkers((prevMarkers) => prevMarkers.concat(marker));
+  }
 
-  onClearMarkers = (map) => {
-    const { markers } = this.state;
+  function onClearMarkers(map) {
     for (let index = 0; index < markers.length; index++) {
       markers[index].remove();
     }
 
-    this.setState({
-      markers: [],
-    });
-  };
+    setMarkers([]);
+  }
 
-  handleMapMove = (mapObj) => {
-    this.setState({
-      map: {
-        lng: mapObj.getCenter().lng.toFixed(4),
-        lat: mapObj.getCenter().lat.toFixed(4),
-        zoom: mapObj.getZoom().toFixed(2),
-      },
-    });
-  };
+  function handleMapMove(map) {
+    setLng(map.getCenter().lng.toFixed(4));
+    setLat(map.getCenter().lat.toFixed(4));
+    setZoom(map.getZoom().toFixed(2));
+  }
 
-  handleCenterChange = (centroid, selected) => {
-    this.setState({
-      nextDestination: centroid.geometry.coordinates,
-      selectedValue: selected,
-    });
-  };
+  function handleCenterChange(centroid, selected) {
+    setNextDestination(centroid.geometry.coordinates);
+    setSelectedValue(selected);
+  }
 
-  handleMarkAsVisited = () => {
-    const url = "http://localhost:4000/setVisited/" + this.state.selectedValue;
+  function handleMarkAsVisited() {
+    const url = "http://localhost:4000/setVisited/" + selectedValue;
     axios
       .put(url)
       .then(function (response) {
@@ -77,33 +61,31 @@ export default class App extends Component {
       .catch(function (error) {
         console.log(error);
       });
-  };
+  }
 
-  render() {
-    if (!this.state.isFetching) {
-      const visited = this.state.countries.filter(
-        (country) => country.visited === true
-      );
-      return (
-        <div className="grid-container">
-          <Search
-            data={this.state.countries}
-            handleCenterChange={this.handleCenterChange}
-            handleMarkAsVisited={this.handleMarkAsVisited}
-          />
-          <Pannel count={visited.length} />
-          <Mapbox
-            map={this.state.map}
-            handleMapMove={this.handleMapMove}
-            newCenter={this.state.nextDestination}
-            visited={visited}
-            handleMarkerUpdate={this.handleMarkerUpdate}
-            onClearMarkers={this.onClearMarkers}
-          />
-        </div>
-      );
-    } else {
-      return <div>Almost there</div>;
-    }
+  if (!isFetching) {
+    const visited = countries.filter((country) => country.visited === true);
+    return (
+      <div className="grid-container">
+        <Search
+          data={countries}
+          handleCenterChange={handleCenterChange}
+          handleMarkAsVisited={handleMarkAsVisited}
+        />
+        <Pannel count={visited.length} />
+        <Mapbox
+          lat={lat}
+          lng={lng}
+          zoom={zoom}
+          handleMapMove={handleMapMove}
+          newCenter={nextDestination}
+          visited={visited}
+          handleMarkerUpdate={handleMarkerUpdate}
+          onClearMarkers={onClearMarkers}
+        />
+      </div>
+    );
+  } else {
+    return <div>Almost there</div>;
   }
 }

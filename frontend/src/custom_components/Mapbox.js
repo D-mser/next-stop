@@ -1,60 +1,62 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 import { MAPBOX_TOKEN } from "../config";
 import LayersClearIcon from "@material-ui/icons/LayersClear";
 import IconButton from "@material-ui/core/IconButton";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
-let map = "";
 
-export default class Mapbox extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.mapContainer = React.createRef();
-  }
+export default function Mapbox(props) {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const { lng, lat, zoom } = props;
 
-  getFeatures = () => {
-    return this.props.visited.map((entry) => ({
+  function getFeatures() {
+    return props.visited.map((entry) => ({
       type: "Feature",
       geometry: entry.location,
     }));
-  };
+  }
 
-  handleFlyToLocation = () => {
-    if (this.props.newCenter.length > 1) {
+  function handleFlyToLocation() {
+    if (props.newCenter.length > 1) {
       let marker = new mapboxgl.Marker()
-        .setLngLat(this.props.newCenter)
-        .addTo(map);
-      this.props.handleMarkerUpdate(marker);
-      map.flyTo({
-        center: this.props.newCenter,
+        .setLngLat(props.newCenter)
+        .addTo(map.current);
+      props.handleMarkerUpdate(marker);
+      map.current.flyTo({
+        center: props.newCenter,
         essential: true,
       });
     }
-  };
+  }
 
-  componentDidMount() {
-    const { lng, lat, zoom } = this.props.map;
-    map = new mapboxgl.Map({
-      container: this.mapContainer.current,
+  useEffect(() => {
+    if (map.current) return; // initialize map only once
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v11",
       center: [lng, lat],
       zoom: zoom,
       maxZoom: 10,
       minZoom: 3,
     });
+  });
 
-    const features = this.getFeatures();
+  useEffect(() => {
+    if (!map.current) return; // initialize map only once
 
     document
       .getElementById("search-button")
-      .addEventListener("click", this.handleFlyToLocation);
+      .addEventListener("click", handleFlyToLocation);
 
-    map.on("move", () => {
-      this.props.handleMapMove(map);
+    const features = getFeatures();
+
+    map.current.on("move", () => {
+      props.handleMapMove(map.current);
     });
-    map.on("load", function () {
-      map.addSource("countries", {
+    map.current.on("load", function () {
+      map.current.addSource("countries", {
         type: "geojson",
         data: {
           type: "FeatureCollection",
@@ -62,7 +64,7 @@ export default class Mapbox extends React.PureComponent {
         },
       });
 
-      map.addLayer({
+      map.current.addLayer({
         id: "countries",
         type: "fill",
         source: "countries",
@@ -73,7 +75,7 @@ export default class Mapbox extends React.PureComponent {
         },
       });
 
-      map.addLayer({
+      map.current.addLayer({
         id: "outline",
         type: "line",
         source: "countries",
@@ -84,22 +86,19 @@ export default class Mapbox extends React.PureComponent {
         },
       });
     });
-  }
+  });
 
-  render() {
-    const { lng, lat, zoom } = this.props.map;
-    return (
-      <div id="map">
-        <div className="sidebar">
-          Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-        </div>
-        <div id="custom-control">
-          <IconButton onClick={() => this.props.onClearMarkers(map)}>
-            <LayersClearIcon color="primary" fontSize="large" />
-          </IconButton>
-        </div>
-        <div ref={this.mapContainer} className="map-container" />
+  return (
+    <div id="map">
+      <div className="sidebar">
+        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
       </div>
-    );
-  }
+      <div id="custom-control">
+        <IconButton onClick={() => props.onClearMarkers(map)}>
+          <LayersClearIcon color="primary" fontSize="large" />
+        </IconButton>
+      </div>
+      <div ref={mapContainer} className="map-container" />
+    </div>
+  );
 }
