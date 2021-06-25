@@ -6,23 +6,18 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 
-export default class Pannel extends React.PureComponent {
-  render() {
-    return (
-      <div id="pannel">
-        <List>
-          <ListItem>
-            <ListItemIcon>
-              <ExploreIcon color="primary" fontSize="large" />
-              <Typography variant="srOnly">Explored countries</Typography>
-            </ListItemIcon>
-            <ListItemText
-              primary={this.props.count}
-              secondary="explored countries"
-            />
-          </ListItem>
-        </List>
-      </div>
-    );
-  }
+export default function Pannel(props) {
+  return (
+    <div id="pannel">
+      <List>
+        <ListItem>
+          <ListItemIcon>
+            <ExploreIcon color="primary" fontSize="large" />
+            <Typography variant="srOnly">Explored countries</Typography>
+          </ListItemIcon>
+          <ListItemText primary={props.count} secondary="explored countries" />
+        </ListItem>
+      </List>
+    </div>
+  );
 }
