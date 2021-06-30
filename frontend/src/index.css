@@ -1,5 +1,7 @@
 body {
   background-color: #efefe8ff;
+  height: 100%;
+  margin: 0;
 }
 .map-container {
   height: 60vh;
@@ -39,13 +41,13 @@ body {
 #search {
   grid-area: search;
   height: 35vh;
-  padding: 10px;
+  padding: 40px;
 }
 
 #pannel {
   grid-area: info_pannel;
   height: 35vh;
-  padding: 10px;
+  padding: 40px;
   overflow: auto;
   max-height: 100vh;
 }
@@ -57,4 +59,45 @@ body {
 
 #mark-visited-button {
   margin-left: 5px;
+}
+
+#navbar {
+  height: 3rem;
+  background-color: #3f51b5;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+#navbar .link:hover {
+  background: #6574c4;
+}
+
+.link {
+  color: #efefe8ff;
+  display: block;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.bg {
+  background-image: url("./images/next_stop.jpg");
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
 }
