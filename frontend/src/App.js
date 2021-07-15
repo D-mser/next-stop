@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Home from "./custom_components/Home";
 import MapsBoard from "./custom_components/MapsBoard";
 import Navbar from "./custom_components/Navbar";
@@ -8,6 +8,12 @@ import { DataContext } from "./DataContext";
 
 export default function App() {
   const { isFetching } = useContext(DataContext);
+
+  useEffect(() => {
+    return () => {
+      localStorage.clear();
+    };
+  });
 
   return (
     <>
@@ -19,9 +25,7 @@ export default function App() {
         <Route path="/maps">
           {!isFetching ? <MapsBoard /> : <div>Almost there</div>}
         </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
+        <Route path="/login" component={Login} />
       </Switch>
     </>
   );
