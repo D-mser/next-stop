@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import HomeIcon from "@material-ui/icons/Home";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 export default function Navbar() {
   return (
@@ -13,7 +14,7 @@ export default function Navbar() {
       </Link>
 
       <Link className="link float-right" to="/login">
-        LOGIN
+        <AccountCircleIcon />
       </Link>
     </nav>
   );
