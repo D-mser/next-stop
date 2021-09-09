@@ -97,7 +97,8 @@ body {
 #search {
   grid-area: search;
   height: 35vh;
-  padding: 40px;
+  padding-top: 50px;
+  padding-left: 20px;
 }
 
 #pannel {
