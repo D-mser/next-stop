@@ -35,11 +35,11 @@ export default function Mapbox(props) {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v11",
+      style: "mapbox://styles/dmser/cktdcwlig182s17qa6qcqgb1d",
       center: [lng, lat],
       zoom: zoom,
       maxZoom: 10,
-      minZoom: 3,
+      minZoom: 2,
     });
   });
 
